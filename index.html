@@ -44,9 +44,9 @@
         <div id="errorMessage" class="alert alert-danger mt-3">Video not found! Please check the link.</div>
     </div>
 
-    <!-- JavaScript to handle video fetching -->
+    <!-- JavaScript to fetch and display videos -->
     <script>
-        // Base URL for uploaded videos
+        // Base URL where videos are hosted
         const videoBaseURL = "https://jimp-lab.github.io/Videos/";
 
         // Function to get the video ID from the URL
@@ -57,28 +57,25 @@
 
         // Function to display the video
         function displayVideo(videoId) {
-            const videoUrl = `${videoBaseURL}${videoId}.mp4`; // Construct the full URL
+            const videoUrl = `${videoBaseURL}${videoId}.mp4`;
             const videoDisplay = document.getElementById("videoDisplay");
             const errorMessage = document.getElementById("errorMessage");
 
-            // Check if the video URL is valid by attempting to load it
-            const video = document.createElement('video');
-            video.src = videoUrl;
-            video.controls = true;
-            video.autoplay = true;
-
-            video.onerror = function () {
-                errorMessage.style.display = "block";
-            };
-
-            video.onloadeddata = function () {
-                videoDisplay.innerHTML = '';
-                videoDisplay.appendChild(video);
-                errorMessage.style.display = "none";
-            };
-
-            // Attempt to load the video
-            video.load();
+            // Simulate a video fetch to verify existence
+            fetch(videoUrl, { method: "HEAD" })
+                .then(response => {
+                    if (response.ok) {
+                        videoDisplay.innerHTML = `
+                            <video src="${videoUrl}" controls autoplay></video>
+                        `;
+                        errorMessage.style.display = "none";
+                    } else {
+                        throw new Error("Video not found");
+                    }
+                })
+                .catch(() => {
+                    errorMessage.style.display = "block";
+                });
         }
 
         // Initialize the page by getting the video ID and displaying the video
