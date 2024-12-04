@@ -46,11 +46,8 @@
 
     <!-- JavaScript to handle video fetching -->
     <script>
-        // Simulated server for testing
-        const simulatedServer = {
-            "video-12345": "https://www.w3schools.com/html/mov_bbb.mp4",
-            "video-67890": "https://www.w3schools.com/html/movie.mp4"
-        };
+        // Base URL for uploaded videos
+        const videoBaseURL = "https://jimp-lab.github.io/Videos/";
 
         // Function to get the video ID from the URL
         function getVideoIdFromURL() {
@@ -60,18 +57,28 @@
 
         // Function to display the video
         function displayVideo(videoId) {
-            const videoUrl = simulatedServer[videoId];
+            const videoUrl = `${videoBaseURL}${videoId}.mp4`; // Construct the full URL
             const videoDisplay = document.getElementById("videoDisplay");
             const errorMessage = document.getElementById("errorMessage");
 
-            if (videoUrl) {
-                videoDisplay.innerHTML = `
-                    <video src="${videoUrl}" controls autoplay></video>
-                `;
-                errorMessage.style.display = "none";
-            } else {
+            // Check if the video URL is valid by attempting to load it
+            const video = document.createElement('video');
+            video.src = videoUrl;
+            video.controls = true;
+            video.autoplay = true;
+
+            video.onerror = function () {
                 errorMessage.style.display = "block";
-            }
+            };
+
+            video.onloadeddata = function () {
+                videoDisplay.innerHTML = '';
+                videoDisplay.appendChild(video);
+                errorMessage.style.display = "none";
+            };
+
+            // Attempt to load the video
+            video.load();
         }
 
         // Initialize the page by getting the video ID and displaying the video
